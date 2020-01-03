@@ -6,7 +6,7 @@
 #'''
 import cv2
 import os
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from config import *
 from utils import get_yolo_boxes, draw_boxes
 import argparse
@@ -15,7 +15,7 @@ import argparse
 ap = argparse.ArgumentParser('face detection in realtime.')
 ap.add_argument('-m', '--model', default=weights_name,
                 help='path to pre-trained weights.')
-ap.add_argument('-v', '--video', default=None, help='path to video.')
+ap.add_argument('-v', '--video', default=0, help='path to video.')
 args = vars(ap.parse_args())
 
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -33,7 +33,7 @@ while camera.isOpened():
     boxes = get_yolo_boxes(model, [frame], net_h, net_w, anchors, obj_thresh, nms_thresh)[0]
 
     print('[INFO] length of boxes{}'.format(len(boxes)))
-    frame = draw_boxes(frame, boxes, obj_thresh, rect=False)
+    frame = draw_boxes(frame, boxes, obj_thresh, rect=True)
 
     cv2.imshow('Face Detection', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -43,5 +43,4 @@ camera.release()
 cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-
     pass
